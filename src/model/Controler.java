@@ -24,7 +24,7 @@ public class Controler {
         users=new ArrayList<User>();
         audios=new ArrayList<Audio>();
         playlists=new ArrayList<Playlist>();
-       
+        adds= new Add ();
     }
 
 /** 
@@ -46,12 +46,12 @@ public class Controler {
         else{
             switch(type){
                 case "1": 
-                    User objUser= new Artist(nickname, id, name, url);
+                    Artist objUser= new Artist(nickname, id, name, url);
                     users.add(objUser);
                     msg="Artista agregado exitosamente";
                     break;
                 case "2": 
-                    User objUser1= new Creator(nickname, id, name, url);
+                    Creator objUser1= new Creator(nickname, id, name, url);
                     users.add(objUser1);
                     msg="Creador de contenido agregado exitosamente";
                     break;
@@ -313,7 +313,7 @@ public class Controler {
     *@return the confirmation message with the code. 
     */
     public String sharePlaylist(String name){
-        String msg="La playlist ingresada no esta registrada";
+        String msg="";
         if(exists(name)){
             for (int i = 0; i < playlists.size(); i++) {
                 if(playlists.get(i).getName().equalsIgnoreCase(name)){
@@ -321,6 +321,10 @@ public class Controler {
                     i=playlists.size();
                 }
             }
+        }
+        else{
+            msg="La playlist ingresada no esta registrada";
+
         }
         return msg;
     }
@@ -333,7 +337,7 @@ public class Controler {
     *@return a message simulating playing a song. 
     */ 
     public String playAudio(String nickname, String audioName){
-        String msg="El nickname ingresado no esta registrado";
+        String msg="";
         if(isAvailable(audioName)){
             msg="Este audio no esta registrado";
         }
@@ -348,7 +352,7 @@ public class Controler {
                         if(audios.get(j).getName().equalsIgnoreCase(audioName)){
                             
                             if(audios.get(j) instanceof Podcast){
-                                Podcast objPodcast=(Podcast)audios.get(i);
+                                Podcast objPodcast=(Podcast)audios.get(j);
 
                                 if(users.get(i) instanceof Standard){
                                     adds.play();
@@ -357,8 +361,8 @@ public class Controler {
                                 objConsumer.addPodcastListen(objPodcast);
                             }
                             
-                            else {
-                                Song objSong=(Song)audios.get(i);
+                            else if (audios.get(j) instanceof Song){
+                                Song objSong=(Song)audios.get(j);
 
                                 if(users.get(i) instanceof Standard){
                                     Standard objStandard = (Standard)objConsumer;
@@ -373,6 +377,10 @@ public class Controler {
                             i=users.size();
                         }
                     }
+                }
+                else{
+                    msg="El nickname ingresado no esta registrado";
+
                 }
 
             }
@@ -391,8 +399,8 @@ public class Controler {
         String msg="Este usuario no esta registrado";
         for (int i = 0; i < users.size(); i++) {
             if(users.get(i).getNickname().equalsIgnoreCase(nickname)){
-                for (int j = 0; j < audios.size(); i++) {
-                    if(audios.get(j).getName().equalsIgnoreCase(songName)&& audios.get(i) instanceof Song){
+                for (int j = 0; j < audios.size(); j++) {
+                    if(audios.get(j).getName().equalsIgnoreCase(songName)&& audios.get(j) instanceof Song){
                         Song objSong= (Song)audios.get(j);
                         objSong.buy();
 
@@ -405,13 +413,12 @@ public class Controler {
                             Standard objStandard= (Standard) users.get(i);
                             msg= objStandard.buySong(objSong);
                         }
-                        i=users.size();
+                        j=audios.size();
                     }
                     else{
                         msg="Esta cancion no existe";
                     }
                 }
-                
             }
             
         }
@@ -582,25 +589,30 @@ public class Controler {
         for(int x=0; x<top5arr.length; x++){
             top5arr[x]="No hay Creadores registrados";
             top5arrArtists[x]="No hay artistas registrados";
+            top5RepProd[x]=0;
+            top5RepArt[x]=0;
 
             for (int i = 0; i < users.size(); i++) {    
                 
-                if(users.get(i) instanceof Producer){
+                if(users.get(i) instanceof Creator){
                     if(!users.get(i).getNickname().equalsIgnoreCase(top5arr[0])&& !users.get(i).getNickname().equalsIgnoreCase(top5arr[1])&& !users.get(i).getNickname().equalsIgnoreCase(top5arr[2])&& !users.get(i).getNickname().equalsIgnoreCase(top5arr[3])&& !users.get(i).getNickname().equalsIgnoreCase(top5arr[4])){
-                        Producer objProd=(Producer)users.get(i);
+                        Creator objProd=(Creator)users.get(i);
                         int points=objProd.getReproductions();
                         top5arr[x]=objProd.getNickname();
                         top5RepProd[x]= objProd.getReproductions();
 
     
                         for(int j=0; j<users.size(); j++){
-                            Producer objProd1=(Producer)users.get(j);
-                            if(!users.get(j).getNickname().equalsIgnoreCase(top5arr[0])&& !users.get(j).getNickname().equalsIgnoreCase(top5arr[1])&& !users.get(j).getNickname().equalsIgnoreCase(top5arr[2])&& !users.get(j).getNickname().equalsIgnoreCase(top5arr[3])&& !users.get(j).getNickname().equalsIgnoreCase(top5arr[4]) && objProd1.getReproductions()>points){
-                                points=objProd1.getReproductions();
-                                top5arr[x]=objProd1.getNickname();
-                                top5RepProd[x]= objProd1.getReproductions();
+                            if(users.get(j) instanceof Creator){
+                                Creator objProd1=(Creator)users.get(j);
+                                if(!users.get(j).getNickname().equalsIgnoreCase(top5arr[0])&& !users.get(j).getNickname().equalsIgnoreCase(top5arr[1])&& !users.get(j).getNickname().equalsIgnoreCase(top5arr[2])&& !users.get(j).getNickname().equalsIgnoreCase(top5arr[3])&& !users.get(j).getNickname().equalsIgnoreCase(top5arr[4]) && objProd1.getReproductions()>points){
+                                    points=objProd1.getReproductions();
+                                    top5arr[x]=objProd1.getNickname();
+                                    top5RepProd[x]= objProd1.getReproductions();
 
+                                }
                             }
+                            
                         }
                     }   
                 }
@@ -613,13 +625,15 @@ public class Controler {
 
     
                         for(int j=0; j<users.size(); j++){
-                            Artist objArtist1=(Artist)users.get(j);
-                            if(!users.get(j).getNickname().equalsIgnoreCase(top5arrArtists[0])&& !users.get(j).getNickname().equalsIgnoreCase(top5arrArtists[1])&& !users.get(j).getNickname().equalsIgnoreCase(top5arrArtists[2])&& !users.get(j).getNickname().equalsIgnoreCase(top5arrArtists[3])&& !users.get(j).getNickname().equalsIgnoreCase(top5arrArtists[4]) && objArtist1.getReproductions()>points){
-                                points=objArtist1.getReproductions();
-                                top5arrArtists[x]=objArtist1.getNickname();
-                                top5RepArt[x]= objArtist1.getReproductions();
-
+                            if(users.get(j) instanceof Artist){
+                                Artist objArtist1=(Artist)users.get(j);
+                                if(!users.get(j).getNickname().equalsIgnoreCase(top5arrArtists[0])&& !users.get(j).getNickname().equalsIgnoreCase(top5arrArtists[1])&& !users.get(j).getNickname().equalsIgnoreCase(top5arrArtists[2])&& !users.get(j).getNickname().equalsIgnoreCase(top5arrArtists[3])&& !users.get(j).getNickname().equalsIgnoreCase(top5arrArtists[4]) && objArtist1.getReproductions()>points){
+                                    points=objArtist1.getReproductions();
+                                    top5arrArtists[x]=objArtist1.getNickname();
+                                    top5RepArt[x]= objArtist1.getReproductions();
+                                }
                             }
+                            
                         }
                     }   
     
@@ -658,32 +672,39 @@ public class Controler {
                         top5RepPod[x]=objPod.getReproductions();
     
                         for(int j=0; j<audios.size(); j++){
-                            Podcast objPod1=(Podcast)audios.get(j);
-                            if(!audios.get(j).getName().equalsIgnoreCase(top10Podcast[0])&& !audios.get(j).getName().equalsIgnoreCase(top10Podcast[1])&& !audios.get(j).getName().equalsIgnoreCase(top10Podcast[2])&& !audios.get(j).getName().equalsIgnoreCase(top10Podcast[3])&& !audios.get(j).getName().equalsIgnoreCase(top10Podcast[4]) && objPod1.getReproductions()>points){
-                                points=objPod1.getReproductions();
-                                top10Podcast[x]=objPod1.getName();
-                                top5RepPod[x]=objPod1.getReproductions();
-
+                            if(audios.get(j) instanceof Podcast){
+                                Podcast objPod1=(Podcast)audios.get(j);
+                                if(!audios.get(j).getName().equalsIgnoreCase(top10Podcast[0])&& !audios.get(j).getName().equalsIgnoreCase(top10Podcast[1])&& !audios.get(j).getName().equalsIgnoreCase(top10Podcast[2])&& !audios.get(j).getName().equalsIgnoreCase(top10Podcast[3])&& !audios.get(j).getName().equalsIgnoreCase(top10Podcast[4]) && objPod1.getReproductions()>points){
+                                    points=objPod1.getReproductions();
+                                    top10Podcast[x]=objPod1.getName();
+                                    top5RepPod[x]=objPod1.getReproductions();
+    
+                                }
                             }
+                            
                         }
                     }   
                 }
                 else if(audios.get(i) instanceof Song){
-                    if(!users.get(i).getNickname().equalsIgnoreCase(top10Songs[0])&& !users.get(i).getNickname().equalsIgnoreCase(top10Songs[1])&& !users.get(i).getNickname().equalsIgnoreCase(top10Songs[2])&& !users.get(i).getNickname().equalsIgnoreCase(top10Songs[3])&& !users.get(i).getNickname().equalsIgnoreCase(top10Songs[4])){
-                        Artist objArtist=(Artist)users.get(i);
+                    
+                    if(!audios.get(i).getName().equalsIgnoreCase(top10Songs[0])&& !audios.get(i).getName().equalsIgnoreCase(top10Songs[1])&& !audios.get(i).getName().equalsIgnoreCase(top10Songs[2])&& !audios.get(i).getName().equalsIgnoreCase(top10Songs[3])&& !audios.get(i).getName().equalsIgnoreCase(top10Songs[4])){
+                        Song objArtist=(Song)audios.get(i);
                         int points=objArtist.getReproductions();
-                        top10Songs[x]=objArtist.getNickname();
+                        top10Songs[x]=objArtist.getName();
                         top5RepSong[x]=objArtist.getReproductions();
 
     
-                        for(int j=0; j<users.size(); j++){
-                            Artist objArtist1=(Artist)users.get(j);
-                            if(!users.get(j).getNickname().equalsIgnoreCase(top10Songs[0])&& !users.get(j).getNickname().equalsIgnoreCase(top10Songs[1])&& !users.get(j).getNickname().equalsIgnoreCase(top10Songs[2])&& !users.get(j).getNickname().equalsIgnoreCase(top10Songs[3])&& !users.get(j).getNickname().equalsIgnoreCase(top10Songs[4]) && objArtist1.getReproductions()>points){
-                                points=objArtist1.getReproductions();
-                                top10Songs[x]=objArtist1.getNickname();
-                                top5RepSong[x]=objArtist1.getReproductions();
-
+                        for(int j=0; j<audios.size(); j++){
+                            if(audios.get(j) instanceof Song){
+                                Song objSong1=(Song)audios.get(j);
+                                if(!audios.get(j).getName().equalsIgnoreCase(top10Songs[0])&& !audios.get(j).getName().equalsIgnoreCase(top10Songs[1])&& !audios.get(j).getName().equalsIgnoreCase(top10Songs[2])&& !audios.get(j).getName().equalsIgnoreCase(top10Songs[3])&& !audios.get(j).getName().equalsIgnoreCase(top10Songs[4]) && objSong1.getReproductions()>points){
+                                    points=objSong1.getReproductions();
+                                    top10Songs[x]=objSong1.getName();
+                                    top5RepSong[x]=objSong1.getReproductions();
+    
+                                }
                             }
+                            
                         }
                     }   
     

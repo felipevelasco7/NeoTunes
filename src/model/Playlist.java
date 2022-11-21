@@ -166,10 +166,10 @@ public class Playlist {
         }
         
         else{
-            msg="No hay ningun audio en esta playlist, no se puede generar un codigo";
+            code="No hay ningun audio en esta playlist, no se puede generar un codigo";
         }
 
-        msg="El codigo de la playlist "+name+" es: ";
+        msg="El codigo de la playlist "+name+" es: "+code;
 
         return msg;
     }

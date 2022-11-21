@@ -31,8 +31,8 @@ public class Consumer extends User {
         favoriteArtist="No hay datos sufucientes";
         favoriteCreator="No hay datos sufucientes";
         
-        int [] favGen = new int[]{0,0,0,0};
-        int [] favCat = new int[]{0,0,0,0};
+        favGen = new int[]{0,0,0,0};
+        favCat = new int[]{0,0,0,0};
 
     }
     

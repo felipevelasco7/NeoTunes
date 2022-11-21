@@ -21,6 +21,7 @@ public class NeoTunesApp{
     * @param choice is the number of the option from the menu.
     */
     public static void menu(){
+        System.out.println();
         System.out.println("Menu: Ingrese el numero de la operacion que desea realizar");
         System.out.println("1. Registrar usuarios productores, artistas y creadores de contenido.");
         System.out.println("2. Registrar usuarios consumidores, estándar y premium.");
@@ -295,7 +296,7 @@ public class NeoTunesApp{
      */
     public static void generateInfo(){
         System.out.println("9. Generar informes con los datos registrados");
-        System.out.println("Ingrese el numero de la opcion que desea realizar:\n 1. informar el total de reproducciones de audio y podcast\n2.Informar el género de canción más escuchado para un usuario específico y para toda la plataforma\n3. nformar la categoría de podcast más escuchada para un usuario y de toda la plataforma.\n4. Top 5 de artistas y del Top 5 de creadores\5. Top 10 de canciones y del Top 10 de podcast\6. De cada género, informar el número de canciones vendidas y el valor total de ventas\n7. La Canción más vendida en la plataforma, el número total de ventas y el valor total de venta\n 8. Finalizar  .");
+        System.out.println("Ingrese el numero de la opcion que desea realizar:\n 1. informar el total de reproducciones de audio y podcast\n2.Informar el género de canción más escuchado para un usuario específico y para toda la plataforma\n3. nformar la categoría de podcast más escuchada para un usuario y de toda la plataforma.\n4. Top 5 de artistas y del Top 5 de creadores\n5. Top 10 de canciones y del Top 10 de podcast \n6. De cada género, informar el número de canciones vendidas y el valor total de ventas \n7. La Canción más vendida en la plataforma, el número total de ventas y el valor total de venta\n 8. Finalizar  .");
         String choice=input.nextLine();
         switch(choice){
             case"1":
@@ -325,10 +326,12 @@ public class NeoTunesApp{
             generateInfo();
             break;
             case"6":
+            System.out.println("Informar el total de canciones vendidas de cada genero");
             System.out.println(controler.genreInfo());
             generateInfo();
             break;
             case"7":
+            System.out.println("Informar la cancion ms vendida");
             System.out.println(controler.mostSoldSong());
             generateInfo();
             break;
